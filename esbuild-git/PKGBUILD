@@ -1,0 +1,28 @@
+pkgname=esbuild-git
+_pkgname=esbuild
+pkgver=v0.2.10.r4.g8d93493
+pkgrel=1
+arch=('i686' 'x86_64')
+url='https://github.com/evanw/esbuild'
+source=('git+git://github.com/evanw/esbuild')
+depends=()
+makedepends=('go')
+sha1sums=('SKIP')
+
+pkgver() {
+  cd "$srcdir/$_pkgname"
+  ( set -o pipefail
+    git describe --long --tags 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  )
+}
+
+build(){
+  cd "$srcdir/$_pkgname/cmd/esbuild"
+  GO111MODULE=on go build -o "$srcdir/bin/esbuild"
+}
+
+package() {
+  cd "$srcdir/bin"
+  install -Dm755 'esbuild' "$pkgdir/usr/bin/esbuild"
+}

@@ -1,0 +1,12 @@
+pkgname=openvr-headers
+pkgver=1.0
+pkgrel=1
+arch=('i686' 'x86_64')
+url="https://github.com/ValveSoftware/openvr"
+source=()
+sha1sums=()
+
+package() {
+  mkdir -p $pkgdir/usr/include
+  curl https://raw.githubusercontent.com/ValveSoftware/openvr/master/headers/openvr_driver.h >$pkgdir/usr/include/openvr_driver.h
+}

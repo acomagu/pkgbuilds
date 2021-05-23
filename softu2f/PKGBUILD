@@ -1,0 +1,41 @@
+pkgname=softu2f-git
+pkgver=r241.51bfaa1
+pkgrel=1
+arch=('i686' 'x86_64')
+url="https://github.com/danstiner/rust-u2f"
+depends=()
+makedepends=('rust' 'git' 'clang')
+source=("git+git://github.com/danstiner/rust-u2f")
+sha1sums=('SKIP')
+
+pkgver() {
+    cd "$srcdir/rust-u2f"
+    ( set -o pipefail
+      git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+      printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+    )
+}
+
+build() {
+    cd "$srcdir/rust-u2f/linux"
+    make build
+}
+
+package() {
+    cd "$srcdir/rust-u2f/linux"
+
+    mkdir -p "$pkgdir/usr/libexec/softu2f"
+    install -Dm 755 target/debug/softu2f-system-daemon "$pkgdir/usr/libexec/softu2f/system-daemon"
+    install -Dm 644 system-daemon/softu2f.service "$pkgdir/etc/systemd/system/softu2f.service"
+    install -Dm 644 system-daemon/softu2f.socket "$pkgdir/etc/systemd/system/softu2f.socket"
+    install -Dm 644 system-daemon/softu2f-tmpfiles.conf "$pkgdir/etc/tmpfiles.d/softu2f.conf"
+    # system-daemon/selinux-policy/softu2f-system-daemon.sh
+    install -Dm 755 target/debug/softu2f-user-daemon "$pkgdir/usr/libexec/softu2f/user-daemon"
+    install -Dm 644 user-daemon/softu2f.service "$pkgdir/etc/systemd/user/softu2f.service"
+
+    echo Run:
+    echo systemctl --system enable softu2f.socket
+    echo systemctl --system start softu2f.socket
+    echo systemctl --user enable softu2f.service
+    echo systemctl --user start softu2f.service
+}

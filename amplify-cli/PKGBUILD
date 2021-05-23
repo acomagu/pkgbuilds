@@ -1,0 +1,24 @@
+_npmname=@aws-amplify/cli
+_npmver=4.26.0
+pkgname=nodejs-amplify-cli # All lowercase
+pkgver=4.26.0
+pkgrel=1
+pkgdesc="Amplify CLI"
+arch=(any)
+url="https://github.com/aws-amplify/amplify-cli#readme"
+license=(Apache-2.0)
+depends=('nodejs' 'npm')
+optdepends=()
+source=(https://registry.npmjs.org/@aws-amplify/cli/-/cli-$_npmver.tgz)
+noextract=($_npmname-$_npmver.tgz)
+sha1sums=(8427a39b944ef1a3da33ab6b97e6666caef2d7a6)
+
+package() {
+  cd $srcdir
+  local _npmdir="$pkgdir/usr/lib/node_modules/"
+  mkdir -p $_npmdir
+  cd $_npmdir
+  npm install -g --prefix "$pkgdir/usr" $_npmname@$_npmver
+}
+
+# vim:set ts=2 sw=2 et:

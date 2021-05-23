@@ -1,0 +1,31 @@
+pkgname=ios-webkit-debug-proxy-git
+_pkgname=ios-webkit-debug-proxy
+pkgver=v1.8.5.r6.g49e9b49
+pkgrel=1
+arch=('i686' 'x86_64')
+url="https://github.com/inwskatsube/oyainput"
+source=("git+git://github.com/google/ios-webkit-debug-proxy")
+depends=()
+makedepends=()
+conflicts=(ios-webkit-debug-proxy)
+sha1sums=('SKIP')
+
+pkgver() {
+  cd "$srcdir/$_pkgname"
+  ( set -o pipefail
+    git describe --long --tags 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  )
+}
+
+build() {
+  cd "$srcdir/$_pkgname"
+  ./autogen.sh --prefix=/usr
+  ./configure LIBS="-lm" --prefix=/usr --includedir=/usr/include/ios-webkit-debug-proxy
+  make
+}
+
+package() {
+  cd "$srcdir/$_pkgname"
+  make DESTDIR="$pkgdir" install
+}

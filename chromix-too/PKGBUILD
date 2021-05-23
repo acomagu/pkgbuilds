@@ -1,0 +1,24 @@
+_npmname=chromix-too
+_npmver=0.0.15
+pkgname=nodejs-chromix-too # All lowercase
+pkgver=0.0.15
+pkgrel=1
+pkgdesc="Command-line (or scripted) access to Chrome's APIs."
+arch=(any)
+url="https://github.com/smblott-github/chromix-too"
+license=(MIT)
+depends=('nodejs' 'npm')
+optdepends=()
+source=(https://registry.npmjs.org/$_npmname/-/$_npmname-$_npmver.tgz)
+noextract=($_npmname-$_npmver.tgz)
+sha1sums=(0400127e68267935a258e939c506d43e1bdc79f7)
+
+package() {
+  cd $srcdir
+  local _npmdir="$pkgdir/usr/lib/node_modules/"
+  mkdir -p $_npmdir
+  cd $_npmdir
+  npm install -g --prefix "$pkgdir/usr" $_npmname@$_npmver
+}
+
+# vim:set ts=2 sw=2 et:

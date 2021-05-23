@@ -1,0 +1,28 @@
+pkgname=go-license-detector-git
+_pkgname=go-license-detector
+pkgver=v3.0.0.r0.g7961dd6
+pkgrel=1
+arch=('i686' 'x86_64')
+url="https://github.com/src-d/go-license-detector"
+source=("git+git://github.com/src-d/go-license-detector")
+depends=()
+makedepends=('go')
+sha1sums=('SKIP')
+
+pkgver() {
+  cd "$srcdir/$_pkgname"
+  ( set -o pipefail
+    git describe --long --tags 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  )
+}
+
+build(){
+  cd "$srcdir/$_pkgname/cmd/license-detector"
+  GO111MODULE=on go build -o "$srcdir/$_pkgname/license-detector"
+}
+
+package() {
+  cd "$srcdir/$_pkgname"
+  install -Dm755 license-detector "$pkgdir"/usr/bin/license-detector
+}

@@ -1,0 +1,28 @@
+pkgname=gnostic-git
+_pkgname=gnostic
+pkgver=v0.3.1.r6.gdde5565
+pkgrel=1
+arch=('i686' 'x86_64')
+url='https://github.com/googleapis/gnostic'
+source=('git+git://github.com/googleapis/gnostic')
+depends=()
+makedepends=('go')
+sha1sums=('SKIP')
+
+pkgver() {
+  cd "$srcdir/$_pkgname"
+  ( set -o pipefail
+    git describe --long --tags 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  )
+}
+
+build(){
+  cd "$srcdir/$_pkgname"
+  GO111MODULE=on go build -o "$srcdir/bin/gnostic"
+}
+
+package() {
+  cd "$srcdir/bin"
+  install -Dm755 'gnostic' "$pkgdir/usr/bin/gnostic"
+}

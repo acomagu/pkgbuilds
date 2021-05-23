@@ -1,0 +1,14 @@
+pkgname=copilot-cli
+pkgver=1.0.0
+pkgrel=1
+pkgdesc='A tool to help deploy containerized applications on Amazon ECS'
+arch=(x86_64)
+url='https://github.com/aws/copilot-cli'
+license=(Apache)
+makedepends=('go')
+source=("copilot::https://github.com/aws/copilot-cli/releases/latest/download/copilot-linux")
+sha256sums=(SKIP)
+
+package() {
+  install -Dm 755 "$srcdir/copilot" "$pkgdir/usr/bin/copilot"
+}

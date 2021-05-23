@@ -1,0 +1,11 @@
+pkgname=disable-faillock
+pkgver=0.0.1
+pkgrel=1
+source=(faillock.conf)
+sha1sums=(SKIP)
+arch=('i686' 'x86_64')
+depends=(pambase)
+
+package() {
+  install -Dm755 faillock.conf "$pkgdir/etc/security/faillock.conf"
+}

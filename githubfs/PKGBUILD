@@ -1,0 +1,30 @@
+pkgname=githubfs-git
+pkgver=r65.8b1a519
+pkgrel=1
+arch=('i686' 'x86_64')
+url="https://github.com/akiellor/githubfs"
+depends=('java-runtime')
+makedepends=('gradle' 'git')
+source=("git+git://github.com/akiellor/githubfs")
+sha1sums=('SKIP')
+
+pkgver() {
+    cd "$srcdir/${pkgname%-git}"
+    ( set -o pipefail
+      git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+      printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+    )
+}
+
+build() {
+    cd "$srcdir/${pkgname%-git}"
+    gradle installDist
+}
+
+package() {
+    cd "$srcdir/${pkgname%-git}"
+    install -d "${pkgdir}/usr/share/java/${pkgname%-git}/"{bin,lib} "${pkgdir}/usr/bin"
+    install -m 755 "build/install/${pkgname%-git}/bin/"* "${pkgdir}/usr/share/java/${pkgname%-git}/bin"
+    install "build/install/${pkgname%-git}/lib/"* "${pkgdir}/usr/share/java/${pkgname%-git}/lib"
+    ln -s "/usr/share/java/${pkgname%-git}/bin/${pkgname%-git}" "${pkgdir}/usr/bin/${pkgname%-git}"
+}

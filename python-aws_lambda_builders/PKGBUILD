@@ -1,0 +1,24 @@
+pkgbase='python-aws-lambda-builders'
+pkgname=('python-aws-lambda-builders')
+_module='aws-lambda-builders'
+pkgver='0.5.0'
+pkgrel=1
+pkgdesc="Python library to compile, build & package AWS Lambda functions for several runtimes & frameworks."
+url="https://github.com/awslabs/aws-lambda-builders"
+depends=('python')
+makedepends=('python-setuptools')
+license=('Apache')
+arch=('any')
+source=("https://files.pythonhosted.org/packages/source/${_module::1}/$_module/$_module-$pkgver.tar.gz")
+sha256sums=('4241d9e43c348b41ad6619b4d0c925f50f3d4a5de90891e22d308a14c0a7967f')
+
+build() {
+    cd "${srcdir}/${_module}-${pkgver}"
+    python setup.py build
+}
+
+package() {
+    depends+=()
+    cd "${srcdir}/${_module}-${pkgver}"
+    python setup.py install --root="${pkgdir}" --optimize=1 --skip-build
+}

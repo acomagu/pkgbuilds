@@ -1,0 +1,22 @@
+pkgname=steamplayprefix-git
+pkgver=r33.39e3b37
+pkgrel=1
+arch=('i686' 'x86_64')
+url="https://gitlab.com/quietkerb/steamplayprefix"
+depends=('steam')
+makedepends=('git')
+source=("git+https://gitlab.com/quietkerb/steamplayprefix.git")
+sha1sums=('SKIP')
+
+pkgver() {
+    cd "$srcdir/${pkgname%-git}"
+    ( set -o pipefail
+      git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+      printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+    )
+}
+
+package() {
+    cd "$srcdir/${pkgname%-git}"
+    install -D sppfx.sh "$pkgdir/usr/bin/sppfx"
+}

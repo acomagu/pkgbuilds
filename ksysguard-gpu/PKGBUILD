@@ -1,0 +1,26 @@
+pkgname=ksysguard-gpu-git
+pkgver=r60.53dc730
+pkgrel=1
+arch=('i686' 'x86_64')
+url="https://github.com/lestofante/ksysguard-gpu"
+depends=(radeontop python3 ksysguard)
+makedepends=(gradle git)
+source=("git+git://github.com/lestofante/ksysguard-gpu")
+sha1sums=('SKIP')
+install=service.install
+
+pkgver() {
+    cd "$srcdir/${pkgname%-git}"
+    ( set -o pipefail
+      git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+      printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+    )
+}
+
+package() {
+    cd "$srcdir/${pkgname%-git}"
+
+    mkdir -p $pkgdir/etc/systemd/system $pkgdir/usr/bin
+    install -Dm644 systemd-unit/ksysguard-gpu.service $pkgdir/etc/systemd/system/
+    install -Dm755 src/ksysguard-gpu.py $pkgdir/usr/bin/
+}

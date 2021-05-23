@@ -1,0 +1,14 @@
+post_install() {
+    echo "Enabling gpuStatsServer in systemd"
+    systemctl enable --now gpuStatsServer
+
+    # Post install message.
+    echo 'GPU status server is installed.'
+    echo 'Follow these steps to add monitor to ksysguard:'
+    echo '  * Start ksysguard'
+    echo '  * File -> Monitor remote machine, in the windows that will appear you will see the following:'
+    echo '    ** Host: 127.0.0.1'
+    echo '    ** Connection type: daemon'
+    echo '    ** Port: 3112'
+    echo '  * Click OK'
+}

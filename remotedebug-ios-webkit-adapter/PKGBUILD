@@ -1,0 +1,11 @@
+pkgname=remotedebug-ios-webkit-adapter
+_pkgname=remotedebug-ios-webkit-adapter
+makedepends=('npm')
+
+package() {
+    npm install -g --user root --prefix "$pkgdir"/usr "$srcdir"/source-tarball.tar.gz
+
+    # Non-deterministic race in npm gives 777 permissions to random directories.
+    # See https://github.com/npm/npm/issues/9359 for details.
+    find "${pkgdir}"/usr -type d -exec chmod 755 {} +
+}

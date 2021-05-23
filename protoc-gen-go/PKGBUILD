@@ -1,0 +1,28 @@
+pkgname=protoc-gen-go
+_pkgname=protobuf
+pkgver=v1.3.2.r4.ged6926b3
+pkgrel=1
+arch=('i686' 'x86_64')
+url='https://github.com/golang/protobuf'
+source=('git+git://github.com/golang/protobuf')
+depends=()
+makedepends=('go')
+sha1sums=('SKIP')
+
+pkgver() {
+  cd "$srcdir/$_pkgname"
+  ( set -o pipefail
+    git describe --long --tags 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  )
+}
+
+build(){
+  cd "$srcdir/$_pkgname/protoc-gen-go"
+  GO111MODULE=on go build -o "$srcdir/bin/protoc-gen-go"
+}
+
+package() {
+  cd "$srcdir/bin"
+  install -Dm755 'protoc-gen-go' "$pkgdir/usr/bin/protoc-gen-go"
+}

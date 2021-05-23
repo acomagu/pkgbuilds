@@ -1,0 +1,28 @@
+pkgname=docx2md-git
+_pkgname=docx2md
+pkgver=v0.0.4.r1.g32a7f7a
+pkgrel=1
+arch=('i686' 'x86_64')
+url='https://github.com/mattn/docx2md'
+source=('git+git://github.com/mattn/docx2md')
+depends=()
+makedepends=('go')
+sha1sums=('SKIP')
+
+pkgver() {
+  cd "$srcdir/$_pkgname"
+  ( set -o pipefail
+    git describe --long --tags 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  )
+}
+
+build(){
+  cd "$srcdir/$_pkgname"
+  GO111MODULE=on go build -o "$srcdir/bin/docx2md"
+}
+
+package() {
+  cd "$srcdir/bin"
+  install -Dm755 'docx2md' "$pkgdir/usr/bin/docx2md"
+}

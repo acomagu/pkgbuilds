@@ -1,0 +1,28 @@
+pkgname=mmv-git
+_pkgname=mmv
+pkgver=r37.4ca8bb5
+pkgrel=1
+arch=('i686' 'x86_64')
+url='https://github.com/itchyny/mmv'
+source=('git+git://github.com/itchyny/mmv')
+depends=()
+makedepends=('go')
+sha1sums=('SKIP')
+
+pkgver() {
+  cd "$srcdir/$_pkgname"
+  ( set -o pipefail
+    git describe --long --tags 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  )
+}
+
+build(){
+  cd "$srcdir/$_pkgname/cmd/mmv"
+  GO111MODULE=on go build -o "$srcdir/bin/mmv"
+}
+
+package() {
+  cd "$srcdir/bin"
+  install -Dm755 'mmv' "$pkgdir/usr/bin/mmv"
+}
