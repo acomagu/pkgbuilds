@@ -1,0 +1,24 @@
+_npmname=graphql-language-service-cli
+_npmver=3.1.13
+pkgname=nodejs-graphql-language-service-cli # All lowercase
+pkgver=3.1.13
+pkgrel=1
+pkgdesc="An interface for building GraphQL language services for IDEs"
+arch=(any)
+url="https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-cli#readme"
+license=(MIT)
+depends=('nodejs' 'npm')
+optdepends=()
+source=(https://registry.npmjs.org/$_npmname/-/$_npmname-$_npmver.tgz)
+noextract=($_npmname-$_npmver.tgz)
+sha1sums=(2fbdbf333657803b07566415a1b460cdd6605c2c)
+
+package() {
+  cd $srcdir
+  local _npmdir="$pkgdir/usr/lib/node_modules/"
+  mkdir -p $_npmdir
+  cd $_npmdir
+  npm install -g --prefix "$pkgdir/usr" $_npmname@$_npmver
+}
+
+# vim:set ts=2 sw=2 et:
